@@ -1,0 +1,7 @@
+access-key-id:     minioadmin
+secret-access-key: minioadmin
+
+dbs:
+  - path: /var/www/html/ghosty_db/database.sqlite
+    replicas:
+    - url: s3://myminio/mybkt/database.sqlite

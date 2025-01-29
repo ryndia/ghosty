@@ -1,7 +1,9 @@
-access-key-id:     minioadmin
-secret-access-key: minioadmin
-
 dbs:
-  - path: /var/www/html/ghosty_db/database.sqlite
+  - path: "/var/www/html/ghosty_db/database.sqlite"
     replicas:
-    - url: s3://myminio/mybkt/database.sqlite
+      - type: s3
+        url: "s3://ghosty-s3-storage/ghosty_db"
+        region: "auto"
+        endpoint: "fly.storage.tigris.dev"
+        access-key-id: "xxxx"
+        secret-access-key: "xxxx"

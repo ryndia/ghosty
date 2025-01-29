@@ -121,22 +121,7 @@ RUN rsync -ar /var/www/html/public-npm/ /var/www/html/public/ \
 # 5. Setup Entrypoint
 EXPOSE 8080
 
-# 6. Install minio
-RUN mkdir /minio
-WORKDIR /minio
-RUN curl -O https://dl.min.io/server/minio/release/linux-amd64/minio
-RUN chmod +x minio
-RUN mv minio /usr/local/bin/
-
-# Install MinIO client
-RUN curl -sSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && \
-    chmod +x /usr/local/bin/mc
-
-# Expose the Minio ports
-EXPOSE 9000
-EXPOSE 9001
-
-# 7. Install litestream
+# 6. Install litestream
 RUN curl -fsSL https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.tar.gz | tar xzv -C /usr/local/bin
 # Copy the litestream.yml file into the container
 COPY litestream.yml /etc/litestream.yml

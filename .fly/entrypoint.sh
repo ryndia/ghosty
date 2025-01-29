@@ -1,18 +1,19 @@
 #!/usr/bin/env sh
 
-# Start MinIO server in the background
-minio server /var/www/html/ghosty_db/minio-data --console-address ":9001" &
-# Wait until MinIO is ready to accept requests (give it some time to initialize)
-until mc alias set myminio http://localhost:9000 minioadmin minioadmin && mc ls myminio; do
-    echo "Waiting for MinIO to start..."
-    sleep 3
-done
+set -e
 
-# Create MinIO bucket
-mc mb myminio/mybkt
+#verify if db exist else restore from s3 storage
+if [ -f /var/www/html/ghosty_db/database.sqlite ]; then
+	echo "Database already exists, skipping restore"
+else
+	echo "No database found, restoring from replica if exists"
+    litestream restore /var/www/html/ghosty_db/database.sqlite
+    chown www-data:www-data /var/www/html/ghosty_db/database.sqlite
+fi
 
-# Start Litestream replication after ensuring MinIO is ready
-litestream replicate database.sqlite s3://myminio/mybkt/database.sqlite &
+#replicate db
+exec litestream replicate &
+
 
 # Run user scripts if they exist
 for f in /var/www/html/.fly/scripts/*.sh; do
